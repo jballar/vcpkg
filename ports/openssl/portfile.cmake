@@ -30,10 +30,12 @@ vcpkg_from_github(
         unix/no-static-libs-for-shared.patch
 )
 
+###
 ### [GBL]
-### Added enable-crypto-mdebug
+### Added enable-crypto-mdebug to CONFIGURE_OPTIONS (required by LightHouse/Resiprocate)
+###
 
-+message(WARNING "GBL: Added enable-crypto-mdebug (required by LightHouse/Resiprocate)")
+message(WARNING "GBL: Added enable-crypto-mdebug (required by LightHouse/Resiprocate)")
 
 vcpkg_list(SET CONFIGURE_OPTIONS
      enable-static-engine

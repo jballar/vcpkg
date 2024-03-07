@@ -1,40 +1,43 @@
+##
 ## Author: GBL
 ##
-## Powershell for vcpkg installation 
+## Powershell script for vcpkg installation 
 ## Script to build libraries for
 ##
 ## LightHouse, SoftPhone, phones server 
+##
 
 ## *** Bootstrap ***
-bootstrap-vcpkg.bat
+	
+cmd.exe /c .\bootstrap-vcpkg.bat
 
 ##
-## Controllare che il path del Visual Studio nel file triplets\x86-windows-static.cmake
-## corrisponda a quello di installazione attuale
+## Check the Visual Studio path in the triplets\x86-windows-static.cmake file
+## matches the current installation one
 ##
-## NB: il path del Visual Studio va escapato in questo modo (come una stringa C/C++)
-##
+## Visual Studio path must be escaped correctly
+## \ -> \\
 ## 
 ## set(VCPKG_VISUAL_STUDIO_PATH "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Professional")
 ##
 
 ## *** cpprestsdk ***
-vcpkg install cpprestsdk:x86-windows-static
+.\vcpkg.exe install cpprestsdk:x86-windows-static
 
 ## *** OpenSSL ***
-vcpkg install openssl:x86-windows-static
+.\vcpkg.exe install openssl:x86-windows-static
 
 ## *** Opus ***
-vcpkg install opus[avx]:x86-windows-static
+.\vcpkg.exe install opus[avx]:x86-windows-static
 
-## *** usockets ssl required!!! ***
-vcpkg install usockets[ssl]:x86-windows-static
+## *** usockets (ssl required!!!) ***
+.\vcpkg.exe install usockets[ssl]:x86-windows-static
 
 ## *** uwebsockets ***
-vcpkg install uwebsockets:x86-windows-static
+.\vcpkg.exe install uwebsockets:x86-windows-static
 
 ## *** Visual Studio integration ***
-vcpkg integrate install
+.\vcpkg.exe integrate install
 
 ## *** Installed packets ***
-vcpkg list
+.\vcpkg.exe list
