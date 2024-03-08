@@ -47,6 +47,18 @@ vcpkg_list(SET CONFIGURE_OPTIONS
      enable-crypto-mdebug
  )
 
+###
+### [GBL]
+### Set D_WIN32_WINNT=0x0601 (Windows 7). This resolves a linker problem with bcrypt.lib.
+###
+
+message(WARNING "VCPKG_CXX_FLAGS = ${VCPKG_CXX_FLAGS}\n")
+message(WARNING "VCPKG_C_FLAGS = ${VCPKG_C_FLAGS}\n")
+set(VCPKG_CXX_FLAGS "-D_WIN32_WINNT=0x0601")
+set(VCPKG_C_FLAGS "-D_WIN32_WINNT=0x0601")
+message(WARNING "VCPKG_CXX_FLAGS = ${VCPKG_CXX_FLAGS}\n")
+message(WARNING "VCPKG_C_FLAGS = ${VCPKG_C_FLAGS}\n")
+
 vcpkg_list(SET CONFIGURE_OPTIONS
     enable-static-engine
     enable-capieng
