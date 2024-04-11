@@ -16,5 +16,5 @@ set(VCPKG_PLATFORM_TOOLSET v141)
 ### path must be escaped correctly
 ### \ -> \\
 
-### the 
-### set(VCPKG_VISUAL_STUDIO_PATH "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Professional")
+### The VCPKG_VISUAL_STUDIO_PATH is now passed as the environment variable
+### set(VCPKG_VISUAL_STUDI O_PATH "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Professional")
