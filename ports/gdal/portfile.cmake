@@ -2,7 +2,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO OSGeo/gdal
     REF "v${VERSION}"
-    SHA512 764490362968b05c0edc1c73c3b51b9a517689f95f0e3e3af141da8ef81614111859bbbf2a1571f047acfbd6ba50a16320ba15ed238cbd73732a960c718d5d50
+    SHA512 2094f9373b13bb600f6c7fbe7fa9da947be98ea06f427940dd0add0930c8fb65f2693148614efcec9c2a103666664aa215445c754b8a20490bfb0e9f2c89db72
     HEAD_REF master
     PATCHES
         find-link-libraries.patch
@@ -22,6 +22,7 @@ vcpkg_replace_string("${SOURCE_PATH}/ogr/ogrsf_frmts/flatgeobuf/flatbuffers/base
 # "core" is used for a dependency which must be enabled to avoid vendored lib.
 vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
     FEATURES
+        archive          GDAL_USE_ARCHIVE
         cfitsio          GDAL_USE_CFITSIO
         curl             GDAL_USE_CURL
         expat            GDAL_USE_EXPAT
@@ -65,7 +66,7 @@ if(GDAL_USE_ICONV AND VCPKG_TARGET_IS_WINDOWS)
 endif()
 
 # Compatibility with older Android versions https://github.com/OSGeo/gdal/pull/5941
-if(VCPKG_TARGET_IS_ANDROID AND ANRDOID_PLATFORM VERSION_LESS 24 AND (VCPKG_TARGET_ARCHITECTURE STREQUAL "x86" OR VCPKG_TARGET_ARCHITECTURE STREQUAL "arm"))
+if(VCPKG_TARGET_IS_ANDROID AND ANDROID_PLATFORM VERSION_LESS 24 AND (VCPKG_TARGET_ARCHITECTURE STREQUAL "x86" OR VCPKG_TARGET_ARCHITECTURE STREQUAL "arm"))
     list(APPEND FEATURE_OPTIONS -DBUILD_WITHOUT_64BIT_OFFSET=ON)
 endif()
 

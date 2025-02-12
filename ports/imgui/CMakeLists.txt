@@ -13,7 +13,7 @@ add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 target_include_directories(
     ${PROJECT_NAME}
     PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR};${CMAKE_CURRENT_SOURCE_DIR}/test-engine>"
         $<INSTALL_INTERFACE:include>
 )
 
@@ -116,14 +116,31 @@ if(IMGUI_FREETYPE)
     target_compile_definitions(${PROJECT_NAME} PUBLIC IMGUI_ENABLE_FREETYPE)
 endif()
 
-if(IMGUI_FREETYPE_LUNASVG)
-    find_package(unofficial-lunasvg CONFIG REQUIRED)
-    target_link_libraries(${PROJECT_NAME} PUBLIC unofficial::lunasvg::lunasvg)
-    target_compile_definitions(${PROJECT_NAME} PUBLIC IMGUI_ENABLE_FREETYPE_LUNASVG)
+if(IMGUI_FREETYPE_SVG)
+    find_package(plutosvg CONFIG REQUIRED)
+    target_link_libraries(${PROJECT_NAME} PUBLIC plutosvg::plutosvg)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC IMGUI_ENABLE_FREETYPE_PLUTOSVG)
 endif()
 
 if(IMGUI_USE_WCHAR32)
     target_compile_definitions(${PROJECT_NAME} PUBLIC IMGUI_USE_WCHAR32)
+endif()
+
+if(IMGUI_TEST_ENGINE)
+    find_package(Stb REQUIRED)
+    target_include_directories(${PROJECT_NAME} PRIVATE ${Stb_INCLUDE_DIR})
+    target_sources(
+        ${PROJECT_NAME}
+        PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}/test-engine/imgui_capture_tool.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/test-engine/imgui_te_context.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/test-engine/imgui_te_coroutine.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/test-engine/imgui_te_engine.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/test-engine/imgui_te_exporters.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/test-engine/imgui_te_perftool.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/test-engine/imgui_te_ui.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/test-engine/imgui_te_utils.cpp
+    )
 endif()
 
 list(REMOVE_DUPLICATES BINDINGS_SOURCES)
@@ -230,6 +247,24 @@ if(NOT IMGUI_SKIP_HEADERS)
 
     if(IMGUI_FREETYPE)
         install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/misc/freetype/imgui_freetype.h DESTINATION include)
+    endif()
+
+    if(IMGUI_TEST_ENGINE)
+        install(
+            FILES
+                ${CMAKE_CURRENT_SOURCE_DIR}/test-engine/imgui_capture_tool.h
+                ${CMAKE_CURRENT_SOURCE_DIR}/test-engine/imgui_te_context.h
+                ${CMAKE_CURRENT_SOURCE_DIR}/test-engine/imgui_te_coroutine.h
+                ${CMAKE_CURRENT_SOURCE_DIR}/test-engine/imgui_te_engine.h
+                ${CMAKE_CURRENT_SOURCE_DIR}/test-engine/imgui_te_exporters.h
+                ${CMAKE_CURRENT_SOURCE_DIR}/test-engine/imgui_te_imconfig.h
+                ${CMAKE_CURRENT_SOURCE_DIR}/test-engine/imgui_te_internal.h
+                ${CMAKE_CURRENT_SOURCE_DIR}/test-engine/imgui_te_perftool.h
+                ${CMAKE_CURRENT_SOURCE_DIR}/test-engine/imgui_te_ui.h
+                ${CMAKE_CURRENT_SOURCE_DIR}/test-engine/imgui_te_utils.h
+            DESTINATION
+                include
+        )
     endif()
 endif()
 

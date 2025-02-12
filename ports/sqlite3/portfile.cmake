@@ -2,9 +2,9 @@ string(REGEX REPLACE "^([0-9]+)[.]([0-9]+)[.]([0-9]+)[.]([0-9]+)" "\\1,0\\2,0\\3
 string(REGEX REPLACE "^([0-9]+),0*([0-9][0-9]),0*([0-9][0-9]),0*([0-9][0-9])," "\\1\\2\\3\\4" SQLITE_VERSION "${SQLITE_VERSION}")
 
 vcpkg_download_distfile(ARCHIVE
-    URLS "https://sqlite.org/2024/sqlite-autoconf-${SQLITE_VERSION}.tar.gz"
+    URLS "https://sqlite.org/2025/sqlite-autoconf-${SQLITE_VERSION}.tar.gz"
     FILENAME "sqlite-autoconf-${SQLITE_VERSION}.zip"
-    SHA512 c6bd4eaa67cada28528d1ac31aec1662c0a11048247a1bb148c1842fb0252934e2096843b56fea94bfb96c4eaaa598ec70ac31f2a5e910388f24f152b9fc4211
+    SHA512 406c5b2b9f906748195102b43e147b1a7ee6e6e59acbe429420575d849648b4e45cfdee19948f13d98e41fb3d9877c99cac6b14be5f9a3cb296c674adcd53c14
 )
 
 vcpkg_extract_source_archive(
@@ -30,12 +30,14 @@ vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
         fts5                SQLITE_ENABLE_FTS5
         math                SQLITE_ENABLE_MATH_FUNCTIONS
         zlib                WITH_ZLIB
+        unicode             SQLITE_ENABLE_ICU
     INVERTED_FEATURES
         tool                SQLITE3_SKIP_TOOLS
 )
 vcpkg_check_features(OUT_FEATURE_OPTIONS none # only using the script-mode side-effects
     FEATURES
         dbstat              SQLITE_ENABLE_DBSTAT_VTAB
+        dbpage-vtab         SQLITE_ENABLE_DBPAGE_VTAB
         fts3                SQLITE_ENABLE_FTS3
         fts4                SQLITE_ENABLE_FTS4
         memsys3             SQLITE_ENABLE_MEMSYS3
