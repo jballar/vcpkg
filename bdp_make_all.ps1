@@ -35,7 +35,7 @@ if (-Not (Test-Path -Path $vs2017Path)) {
 .\vcpkg.exe install openssl:x86-windows-static
 
 ## *** Opus ***
-.\vcpkg.exe install opus[avx]:x86-windows-static
+.\vcpkg.exe install opus[avx2]:x86-windows-static
 
 ## *** usockets (ssl required!!!) ***
 .\vcpkg.exe install usockets[ssl]:x86-windows-static
