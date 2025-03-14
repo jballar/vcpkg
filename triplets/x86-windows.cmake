@@ -11,7 +11,9 @@ set(VCPKG_LIBRARY_LINKAGE dynamic)
 ### Visual Studio 2022
 ###
 
-message(WARNING "GBL: IMPORTANT!!! Visual Studio setting not changed")
-message(WARNING "VCPKG_VISUAL_STUDIO_PATH = ${VCPKG_VISUAL_STUDIO_PATH}")
-message(WARNING "VCPKG_PLATFORM_TOOLSET = ${VCPKG_PLATFORM_TOOLSET}")
-
+message(STATUS "________________________________________________________________________________")
+message(STATUS "GBL: TRIPLET x86-windows")
+message(STATUS "GBL: IMPORTANT!!! Visual Studio setting not changed")
+message(STATUS "GBL: VCPKG_VISUAL_STUDIO_PATH = ${VCPKG_VISUAL_STUDIO_PATH}")
+message(STATUS "GBL: VCPKG_PLATFORM_TOOLSET = ${VCPKG_PLATFORM_TOOLSET}")
+message(STATUS "________________________________________________________________________________")

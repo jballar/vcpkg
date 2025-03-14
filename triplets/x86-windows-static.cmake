@@ -17,9 +17,12 @@ set(VCPKG_LIBRARY_LINKAGE static)
 # message(WARNING "GBL: IMPORTANT!!! VCPKG_PLATFORM_TOOLSET set to v141 (Visual Studio 2017)")
 # set(VCPKG_PLATFORM_TOOLSET v141)
 
-message(WARNING "GBL: IMPORTANT!!! Visual Studio setting not changed")
-message(WARNING "VCPKG_VISUAL_STUDIO_PATH = ${VCPKG_VISUAL_STUDIO_PATH}")
-message(WARNING "VCPKG_PLATFORM_TOOLSET = ${VCPKG_PLATFORM_TOOLSET}")
+message(STATUS "________________________________________________________________________________")
+message(STATUS "GBL: TRIPLET x86-windows-static")
+message(STATUS "GBL: IMPORTANT!!! Visual Studio setting not changed")
+message(STATUS "GBL: VCPKG_VISUAL_STUDIO_PATH = ${VCPKG_VISUAL_STUDIO_PATH}")
+message(STATUS "GBL: VCPKG_PLATFORM_TOOLSET = ${VCPKG_PLATFORM_TOOLSET}")
+message(STATUS "________________________________________________________________________________")
 
 ### path must be escaped correctly
 ### \ -> \\
