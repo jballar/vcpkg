@@ -18,33 +18,36 @@ param (
     [string]$vs2022Path
 )
 
+$startTime = Get-Date
+Write-Host "Script started @ $($startTime.ToString('HH:mm:ss'))"
+
+#################
+### ARGOMENTI ###
+#################
+
+Write-Host "Arguments from command line:"
+Write-Host
+Write-Host "VS2017 Path = $vs2017Path"
+Write-Host "VS2022 Path = $vs2022Path"
+
 ######################
 ### VCPKG BOOTSTRAP
 ######################
 
 cmd.exe /c .\bootstrap-vcpkg.bat
 
-#################
-### ARGOMENTI ###
-#################
-
-Write-Host "Arguments from command line"
-Write-Host
-Write-Host "VS2017 Path = $vs2017Path"
-Write-Host "VS2022 Path = $vs2022Path"
-
 ####################################
 ### VISUAL STUDIO PATH (CRITICAL)
 ####################################
 
-### (TBR) Not really used now!!!
+### (TBR) Save parameters on environment
+### Not really used now!!!
 [Environment]::SetEnvironmentVariable('VCPKG_VISUAL_STUDIO_PATH_VS2017', $vs2017Path)
 [Environment]::SetEnvironmentVariable('VCPKG_VISUAL_STUDIO_PATH_VS2022', $vs2022Path)
 
 $vsPathExternal = [System.Environment]::GetEnvironmentVariable('VCPKG_VISUAL_STUDIO_PATH')
 Write-Output "VCPKG_VISUAL_STUDIO_PATH (externals set) = $vsPathExternal"
 
-# Controlla altre due variabili di ambiente
 if (-not $vs2017Path -and -not $vs2022Path) {
     Write-Output "No Visual Studio PATH passed from command line" 
 } elseif ($vs2022Path) {
@@ -58,13 +61,18 @@ if (-not $vs2017Path -and -not $vs2022Path) {
 $vsPath = [System.Environment]::GetEnvironmentVariable('VCPKG_VISUAL_STUDIO_PATH')
 
 if (-Not $vsPath) {
-    Write-Host "No Visual Studio Path passed as environment variable"
+    Write-Host "No Visual Studio Path 'VCPKG_VISUAL_STUDIO_PATH' in environment variable"
     Write-Host "Script could not work, Try with:"
     Write-Host ""
     Write-Host "bdp_make_all.ps1 -vs2022Path <VISUAL_STUDIO_2022_PATH> (preferred)"
     Write-Host "bdp_make_all.ps1 -vs2017Path <VISUAL_STUDIO_2017_PATH>"
     Write-Host ""
 }
+
+Write-Host "******************************************************************************"
+Write-Host "Initialization terminated!!!"
+Write-Host "Starting with package installation!!!"
+Write-Host "******************************************************************************"
 
 #########################
 ### VCPKG INSTALLATION
@@ -85,7 +93,7 @@ if (-Not $vsPath) {
 ## *** uwebsockets ***
 .\vcpkg.exe install uwebsockets:x86-windows-static
 
-## *** grpc - dynamic link ***
+## *** gRPC - dynamic link ***
 .\vcpkg.exe install grpc:x86-windows
 
 ## *** Visual Studio integration ***
@@ -93,4 +101,19 @@ if (-Not $vsPath) {
 
 ## *** Installed packets ***
 .\vcpkg.exe list
+
+###############################
+### SHOW SCRIPT RUNNING TIME
+###############################
+
+$endTime = Get-Date
+
+$duration = $endTime - $startTime
+$hours = [math]::Floor($duration.TotalHours)
+$minutes = $duration.Minutes
+$seconds = $duration.Seconds
+
+Write-Host "Script started @ $($startTime.ToString('HH:mm:ss'))"
+Write-Host "Script End @     $($endTime.ToString('HH:mm:ss'))"
+Write-Host "Durata: $hours ore, $minutes minuti, $seconds secondi"
 
