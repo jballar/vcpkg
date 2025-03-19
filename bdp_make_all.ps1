@@ -15,7 +15,8 @@
 
 param (
     [string]$vs2017Path, 
-    [string]$vs2022Path
+    [string]$vs2022Path,
+    [bool]$doCleanup = $true
 )
 
 $startTime = Get-Date
@@ -29,6 +30,7 @@ Write-Host "Arguments from command line:"
 Write-Host
 Write-Host "VS2017 Path = $vs2017Path"
 Write-Host "VS2022 Path = $vs2022Path"
+Write-Host "Cleanup after build = $doCleanup"
 
 ######################
 ### VCPKG BOOTSTRAP
@@ -40,7 +42,7 @@ cmd.exe /c .\bootstrap-vcpkg.bat
 ### VISUAL STUDIO PATH (CRITICAL)
 ####################################
 
-### (TBR) Save parameters on environment
+### (TBR) Save Visual Studio parameters on environment
 ### Not really used now!!!
 [Environment]::SetEnvironmentVariable('VCPKG_VISUAL_STUDIO_PATH_VS2017', $vs2017Path)
 [Environment]::SetEnvironmentVariable('VCPKG_VISUAL_STUDIO_PATH_VS2022', $vs2022Path)
@@ -62,7 +64,7 @@ $vsPath = [System.Environment]::GetEnvironmentVariable('VCPKG_VISUAL_STUDIO_PATH
 
 if (-Not $vsPath) {
     Write-Host "No Visual Studio Path 'VCPKG_VISUAL_STUDIO_PATH' in environment variable"
-    Write-Host "Script could not work, Try with:"
+    Write-Host "If this script does not work, please try with"
     Write-Host ""
     Write-Host "bdp_make_all.ps1 -vs2022Path <VISUAL_STUDIO_2022_PATH> (preferred)"
     Write-Host "bdp_make_all.ps1 -vs2017Path <VISUAL_STUDIO_2017_PATH>"
@@ -78,28 +80,34 @@ Write-Host "********************************************************************
 ### VCPKG INSTALLATION
 #########################
 
+# Costruisci il flag di cleanup
+$cleanupFlag = ""
+if ($doCleanup) {
+    $cleanupFlag = "--clean-after-build"
+}
+
 ## *** cpprestsdk ***
-.\vcpkg.exe install cpprestsdk:x86-windows-static
+.\vcpkg.exe install cpprestsdk:x86-windows-static $cleanupFlag
 
 ## *** OpenSSL ***
-.\vcpkg.exe install openssl:x86-windows-static
+.\vcpkg.exe install openssl:x86-windows-static $cleanupFlag
 
 ## *** Opus ***
-.\vcpkg.exe install opus[avx2]:x86-windows-static
+.\vcpkg.exe install opus[avx2]:x86-windows-static $cleanupFlag
 
 ## *** usockets (ssl required!!!) ***
-.\vcpkg.exe install usockets[ssl]:x86-windows-static
+.\vcpkg.exe install usockets[ssl]:x86-windows-static $cleanupFlag
 
 ## *** uwebsockets ***
-.\vcpkg.exe install uwebsockets:x86-windows-static
+.\vcpkg.exe install uwebsockets:x86-windows-static $cleanupFlag
 
 ## *** gRPC - dynamic link ***
-.\vcpkg.exe install grpc:x86-windows
+.\vcpkg.exe install grpc:x86-windows $cleanupFlag
 
 ## *** Visual Studio integration ***
 .\vcpkg.exe integrate install
 
-## *** Installed packets ***
+## *** Installed packages list ***
 .\vcpkg.exe list
 
 ###############################
