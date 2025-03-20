@@ -14,9 +14,10 @@
 ### "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\Professional"
 
 param (
-    [string]$vs2017Path, 
     [string]$vs2022Path,
-    [bool]$doCleanup = $true
+    [string]$vs2017Path,
+    [bool]$doCleanup = $true,
+    [bool]$removePackageDir = $false
 )
 
 $startTime = Get-Date
@@ -28,11 +29,12 @@ Write-Host "Script started @ $($startTime.ToString('HH:mm:ss'))"
 
 Write-Host "Arguments from command line:"
 Write-Host
-Write-Host "VS2017 Path = $vs2017Path"
 Write-Host "VS2022 Path = $vs2022Path"
+Write-Host "VS2017 Path = $vs2017Path"
 Write-Host "Cleanup after build = $doCleanup"
+Write-Host "Force remove packages directory = $removePackageDir"
 
-######################
+####################
 ### VCPKG BOOTSTRAP
 ######################
 
@@ -81,34 +83,66 @@ Write-Host "********************************************************************
 #########################
 
 # Costruisci il flag di cleanup
-$cleanupFlag = ""
+$cleanupAll = ""
+$cleanupNoPackages = ""
+
 if ($doCleanup) {
-    $cleanupFlag = "--clean-after-build"
+    $cleanupAll = "--clean-after-build"
+    $cleanupNoPackages = "--clean-buildtrees-after-build --clean-downloads-after-build"
 }
 
 ## *** cpprestsdk ***
-.\vcpkg.exe install cpprestsdk:x86-windows-static $cleanupFlag
+.\vcpkg.exe install cpprestsdk:x86-windows-static $cleanupAll
 
 ## *** OpenSSL ***
-.\vcpkg.exe install openssl:x86-windows-static $cleanupFlag
+.\vcpkg.exe install openssl:x86-windows-static $cleanupAll
 
 ## *** Opus ***
-.\vcpkg.exe install opus[avx2]:x86-windows-static $cleanupFlag
+.\vcpkg.exe install opus[avx2]:x86-windows-static $cleanupAll
 
 ## *** usockets (ssl required!!!) ***
-.\vcpkg.exe install usockets[ssl]:x86-windows-static $cleanupFlag
+.\vcpkg.exe install usockets[ssl]:x86-windows-static $cleanupAll
 
 ## *** uwebsockets ***
-.\vcpkg.exe install uwebsockets:x86-windows-static $cleanupFlag
+.\vcpkg.exe install uwebsockets:x86-windows-static $cleanupAll
 
 ## *** gRPC - dynamic link ***
-.\vcpkg.exe install grpc:x86-windows $cleanupFlag
+.\vcpkg.exe install grpc:x86-windows $cleanupNoPackages
 
 ## *** Visual Studio integration ***
 .\vcpkg.exe integrate install
 
 ## *** Installed packages list ***
 .\vcpkg.exe list
+
+###################################
+### Copy gRPC and protobuf tools
+###################################
+
+$vcPkgRoot = [System.Environment]::GetEnvironmentVariable('VCPKG_ROOT')
+if (!$VcpkgRoot) { 
+    $VcpkgRoot = $PWD.Path 
+}
+
+Write-Host "Copying gRPC and protobuf tools - VCPKG root = $vcPkgRoot..."
+
+$packageSrc = "$vcPkgRoot\packages" 
+$packageDest = "$VcpkgRoot\bdp_packages"
+Copy-Item -Path "$packageSrc\protobuf_x64-windows\tools\" `
+          -Destination "$packageDest\protobuf_x64-windows\tools\" `
+          -Recurse -Force -Container
+          
+Copy-Item -Path "$packageSrc\grpc_x64-windows\tools\" `
+          -Destination "$packageDest\grpc_x64-windows\tools" `
+          -Recurse -Force -Container
+
+Write-Host "Copying terminated!!!"
+
+if ($removePackageDir) {
+    Write-Host "Removing packages directory..."
+    Remove-Item -Path $packageSrc -Recurse -Force
+    Write-Host "Packages directory removed!!!"
+}
 
 ###############################
 ### SHOW SCRIPT RUNNING TIME
