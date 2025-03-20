@@ -16,16 +16,16 @@
 param (
     [string]$vs2022Path,
     [string]$vs2017Path,
-    [bool]$doCleanup = $true,
-    [bool]$removePackageDir = $false
+    [switch]$doCleanup,
+    [switch]$removePackageDir
 )
 
 $startTime = Get-Date
 Write-Host "Script started @ $($startTime.ToString('HH:mm:ss'))"
 
-#################
-### ARGOMENTI ###
-#################
+################
+### ARGUMENTS
+################
 
 Write-Host "Arguments from command line:"
 Write-Host
@@ -34,7 +34,7 @@ Write-Host "VS2017 Path = $vs2017Path"
 Write-Host "Cleanup after build = $doCleanup"
 Write-Host "Force remove packages directory = $removePackageDir"
 
-####################
+######################
 ### VCPKG BOOTSTRAP
 ######################
 
