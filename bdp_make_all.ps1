@@ -88,7 +88,7 @@ $cleanupNoPackages = ""
 
 if ($doCleanup) {
     $cleanupAll = "--clean-after-build"
-    $cleanupNoPackages = "--clean-buildtrees-after-build --clean-downloads-after-build"
+    $cleanupNoPackages = @("--clean-buildtrees-after-build", "--clean-downloads-after-build")
 }
 
 ## *** cpprestsdk ***
